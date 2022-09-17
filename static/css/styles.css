@@ -11699,19 +11699,26 @@ body {
   padding: 5rem 0;
 }
 
+/* Mis adiciones */
 
+/* images */
 .knife {
     width: 30%;
 }
 
+/* Text */
 .text-padding {
     padding: 0 0 5%;
+}
+.stories-title{
+    padding: 5% 0 5%;
 }
 
 .mafia {
     width: 15%;
 }
 
-.carousel-img{
-    width: 45%
+.story-image{
+    max-width: 100%;
+    height: auto;
 }
