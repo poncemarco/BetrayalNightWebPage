@@ -11719,6 +11719,7 @@ body {
 }
 
 .story-image{
-    max-width: 100%;
-    height: auto;
+    align: center;
+    max-height: 650px;
+    max-width: 90%;
 }
