@@ -8,7 +8,7 @@ import smtplib
 
 # Credencials -------------------------------
 email_send = "marco.a.ponce.p@gmail.com"  # "bretrayal_nights@yahoo.com"
-password_not = "7471482660"  # "coyotas515"
+password_not = "jfkgsrpzyozggrml"  # "coyotas515"
 email_to = "maarco.app98@gmail.com"
 
 # Flask setup
@@ -32,6 +32,7 @@ class Client(db.Model):
     cellphone = db.Column(db.String(250), nullable=False)
     numero_personas = db.Column(db.Integer, nullable=False)
     game_type = db.Column(db.String(250), nullable=False)
+    cp = db.Column(db.String(250), nullable=False)
 
 
 db.create_all()
@@ -42,9 +43,10 @@ class Info(FlaskForm):
     email = StringField(label="email", validators=[DataRequired(), Email()])
     cellphone = StringField(label="Número celular", validators=[DataRequired()])
     numero_personas = SelectField(label="Número de personas que participaran",
-                                  choices=[5, 6, 7, 8, 9, 10, 11, 12, "más de 12"])
+                                  choices=["8", "9", "10", "11", "12", "13", "14", "15", "más de 15"])
     game_type = SelectField(label="Historia",
                             choices=["Panic At The Disco!", "Sombras del Pasado", "Demoliendo Destinos"])
+    cp = StringField(label="Código Postal", validators=[DataRequired()])
     submit_button = SubmitField('submit')
 
 
@@ -57,26 +59,32 @@ def home():
 def info():
     info_form = Info()
     if info_form.validate_on_submit():
-        '''with smtplib.SMTP('smtp.gmail.com', 465) as connection:
+        message = f'''Subject: Cotizacion nueva \n \n
+                 {info_form.name.data} quiere cotizar una sesion para {info_form.numero_personas.data} personas, 
+                para la historia {info_form.game_type.data}. Lo puedes contactar por WhatsApp 
+                al numero: {info_form.cellphone.data} o a su correo: {info_form.email.data}, 
+                su CP es {info_form.cp.data}.'''.encode("utf-8")
+        with smtplib.SMTP('smtp.gmail.com') as connection:
             connection.starttls()
-            connection.login(user=email_send, password=password_not)
-            connection.sendmail(
-                from_addr=email_send,
-                to_addrs=email_to,
-                msg=f'Subject: Cotizacion nueva \n\n '
-                    f'{info_form.name.data} quiere cotizar una sesion para'
-                    f'{info_form.numero_personas.data} personas, para la historia'
-                    f'{info_form.game_type.data} \n '
-                    f'Lo puedes contactar por WhatsApp al número: {info_form.cellphone.data} \n'
-                    f'o a su correo: {info_form.email.data}'
-            )
-            '''
+            try:
+                connection.login(user=email_send, password=password_not)
+                connection.sendmail(
+                    from_addr=email_send,
+                    to_addrs=email_to,
+                    msg=message
+                )
+            except Exception as e:
+                # Print any error messages to stdout
+                print(e)
+            
+
         new_client = Client(
             name=info_form.name.data,
             email=info_form.email.data,
             cellphone=info_form.cellphone.data,
             numero_personas=info_form.numero_personas.data,
-            game_type=info_form.game_type.data
+            game_type=info_form.game_type.data,
+            cp=info_form.cp.data
         )
         db.session.add(new_client)
         db.session.commit()
